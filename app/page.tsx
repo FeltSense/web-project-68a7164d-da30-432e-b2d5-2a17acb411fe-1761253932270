@@ -1,9 +1,61 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useState, FormEvent } from 'react'
 
 export default function HomePage() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [submitStatus, setSubmitStatus] = useState<{
+    type: 'success' | 'error' | null
+    message: string
+  }>({ type: null, message: '' })
+
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+    setIsSubmitting(true)
+    setSubmitStatus({ type: null, message: '' })
+
+    const form = e.currentTarget as HTMLFormElement
+    
+    const formData = {
+      name: (form.querySelector('#name') as HTMLInputElement).value,
+      email: (form.querySelector('#email') as HTMLInputElement).value,
+      phone: (form.querySelector('#phone') as HTMLInputElement).value,
+      company: (form.querySelector('#company') as HTMLInputElement).value,
+      budget: (form.querySelector('#budget') as HTMLSelectElement).value,
+      services: (form.querySelector('#services') as HTMLSelectElement).value,
+      message: (form.querySelector('#message') as HTMLTextAreaElement).value,
+      source: 'Imaginary Space Contact Form',
+      industry: 'Marketing'
+    }
+
+    try {
+      const response = await fetch('https://deep-api-server-2moiw.kinsta.app/api/form-submissions', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      })
+
+      if (!response.ok) {
+        throw new Error('Submission failed')
+      }
+
+      setSubmitStatus({
+        type: 'success',
+        message: 'Thank you! We\'ll be in touch within 24 hours to discuss your marketing needs.',
+      })
+      form.reset()
+    } catch (error) {
+      setSubmitStatus({
+        type: 'error',
+        message: 'Something went wrong. Please try again or email us directly at hello@imaginaryspace.com',
+      })
+    } finally {
+      setIsSubmitting(false)
+    }
+  }
 
   return (
     <main className="min-h-screen bg-white">
@@ -395,7 +447,7 @@ export default function HomePage() {
             </div>
           </div>
           <p className="text-gray-700 text-lg leading-relaxed flex-1">
-            "Imaginary Space revolutionized our content marketing approach. Their data-driven strategies increased our engagement by 340% in just three months. The team's creativity and analytical mindset are unmatched."
+            &quot;Imaginary Space revolutionized our content marketing approach. Their data-driven strategies increased our engagement by 340% in just three months. The team&apos;s creativity and analytical mindset are unmatched.&quot;
           </p>
         </div>
 
@@ -420,7 +472,7 @@ export default function HomePage() {
             </div>
           </div>
           <p className="text-gray-700 text-lg leading-relaxed flex-1">
-            "Working with Imaginary Space has been a game-changer. Their innovative campaigns helped us break into new markets and our ROI doubled. They truly understand the pulse of modern marketing."
+            &quot;Working with Imaginary Space has been a game-changer. Their innovative campaigns helped us break into new markets and our ROI doubled. They truly understand the pulse of modern marketing.&quot;
           </p>
         </div>
 
@@ -445,7 +497,7 @@ export default function HomePage() {
             </div>
           </div>
           <p className="text-gray-700 text-lg leading-relaxed flex-1">
-            "Imaginary Space doesn't just execute campaigns—they craft experiences. Their strategic insights and creative excellence helped us achieve a 250% increase in qualified leads. Absolutely phenomenal partnership!"
+            &quot;Imaginary Space doesn&apos;t just execute campaigns—they craft experiences. Their strategic insights and creative excellence helped us achieve a 250% increase in qualified leads. Absolutely phenomenal partnership!&quot;
           </p>
         </div>
 
@@ -470,7 +522,7 @@ export default function HomePage() {
             </div>
           </div>
           <p className="text-gray-700 text-lg leading-relaxed flex-1">
-            "Imaginary Space revolutionized our content marketing approach. Their data-driven strategies increased our engagement by 340% in just three months. The team's creativity and analytical mindset are unmatched."
+            &quot;Imaginary Space revolutionized our content marketing approach. Their data-driven strategies increased our engagement by 340% in just three months. The team&apos;s creativity and analytical mindset are unmatched.&quot;
           </p>
         </div>
       </div>
@@ -670,67 +722,14 @@ export default function HomePage() {
 </div>
       
       {/* Contact Form - Supabase Integration */}
-      <{
-    type: 'success' | 'error' | null;
-    message: string;
-  }>({ type: null, message: '' });
-
-  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    setIsSubmitting(true);
-    setSubmitStatus({ type: null, message: '' });
-
-    const form = e.currentTarget as HTMLFormElement;
-    
-    const formData = {
-      name: (form.querySelector('#name') as HTMLInputElement).value,
-      email: (form.querySelector('#email') as HTMLInputElement).value,
-      phone: (form.querySelector('#phone') as HTMLInputElement).value,
-      company: (form.querySelector('#company') as HTMLInputElement).value,
-      budget: (form.querySelector('#budget') as HTMLSelectElement).value,
-      services: (form.querySelector('#services') as HTMLSelectElement).value,
-      message: (form.querySelector('#message') as HTMLTextAreaElement).value,
-      source: 'Imaginary Space Contact Form',
-      industry: 'Marketing'
-    };
-
-    try {
-      const response = await fetch('https://deep-api-server-2moiw.kinsta.app/api/form-submissions', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData),
-      });
-
-      if (!response.ok) {
-        throw new Error('Submission failed');
-      }
-
-      setSubmitStatus({
-        type: 'success',
-        message: 'Thank you! We\'ll be in touch within 24 hours to discuss your marketing needs.',
-      });
-      form.reset();
-    } catch (error) {
-      setSubmitStatus({
-        type: 'error',
-        message: 'Something went wrong. Please try again or email us directly at hello@imaginaryspace.com',
-      });
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
-
-  return (
-    <section className="py-20 px-4 bg-gradient-to-br from-purple-50 via-white to-blue-50">
+      <section className="py-20 px-4 bg-gradient-to-br from-purple-50 via-white to-blue-50">
       <div className="max-w-6xl mx-auto">
         <div className="text-center mb-12">
           <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
-            Let's Create Something <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-blue-600">Extraordinary</span>
+            Let&apos;s Create Something <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-blue-600">Extraordinary</span>
           </h2>
           <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-            Partner with Imaginary Space to transform your brand's digital presence
+            Partner with Imaginary Space to transform your brand&apos;s digital presence
           </p>
         </div>
 
@@ -738,7 +737,7 @@ export default function HomePage() {
           <div className="bg-white rounded-2xl shadow-2xl overflow-hidden border border-gray-100">
             <div className="bg-gradient-to-r from-purple-600 to-blue-600 px-8 py-6">
               <h3 className="text-2xl font-bold text-white mb-2">Start Your Project</h3>
-              <p className="text-purple-100">Fill out the form below and we'll get back to you within 24 hours</p>
+              <p className="text-purple-100">Fill out the form below and we&apos;ll get back to you within 24 hours</p>
             </div>
 
             <form onSubmit={handleSubmit} className="p-8 space-y-6">
@@ -805,283 +804,4 @@ export default function HomePage() {
                   <select
                     id="services"
                     required
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all bg-white"
-                  >
-                    <option value="">Select a service</option>
-                    <option value="brand-strategy">Brand Strategy</option>
-                    <option value="digital-marketing">Digital Marketing</option>
-                    <option value="social-media">Social Media Management</option>
-                    <option value="content-creation">Content Creation</option>
-                    <option value="seo-sem">SEO & SEM</option>
-                    <option value="web-design">Web Design</option>
-                    <option value="full-package">Full Marketing Package</option>
-                  </select>
-                </div>
-
-                <div>
-                  <label htmlFor="budget" className="block text-sm font-semibold text-gray-700 mb-2">
-                    Monthly Budget Range *
-                  </label>
-                  <select
-                    id="budget"
-                    required
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all bg-white"
-                  >
-                    <option value="">Select budget</option>
-                    <option value="5k-10k">$5,000 - $10,000</option>
-                    <option value="10k-25k">$10,000 - $25,000</option>
-                    <option value="25k-50k">$25,000 - $50,000</option>
-                    <option value="50k-100k">$50,000 - $100,000</option>
-                    <option value="100k+">$100,000+</option>
-                  </select>
-                </div>
-              </div>
-
-              <div>
-                <label htmlFor="message" className="block text-sm font-semibold text-gray-700 mb-2">
-                  Tell Us About Your Project *
-                </label>
-                <textarea
-                  id="message"
-                  required
-                  rows={4}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all resize-none"
-                  placeholder="Share your goals, challenges, and what you hope to achieve with Imaginary Space..."
-                />
-              </div>
-
-              {submitStatus.type && (
-                <div
-                  className={`p-4 rounded-lg ${
-                    submitStatus.type === 'success'
-                      ? 'bg-green-50 border border-green-200 text-green-800'
-                      : 'bg-red-50 border border-red-200 text-red-800'
-                  }`}
-                >
-                  <p className="text-sm font-medium">{submitStatus.message}</p>
-                </div>
-              )}
-
-              <button
-                type="submit"
-                disabled={isSubmitting}
-                className="w-full bg-gradient-to-r from-purple-600 to-blue-600 text-white font-bold py-4 px-8 rounded-lg hover:from-purple-700 hover:to-blue-700 transform hover:scale-[1.02] transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none shadow-lg"
-              >
-                {isSubmitting ? (
-                  <span className="flex items-center justify-center">
-                    <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                    </svg>
-                    Submitting...
-                  </span>
-                ) : (
-                  'Get Your Free Consultation'
-                )}
-              </button>
-
-              <p className="text-xs text-gray-500 text-center">
-                By submitting this form, you agree to Imaginary Space's privacy policy and terms of service.
-              </p>
-            </form>
-          </div>
-
-          <div className="mt-8 text-center">
-            <p className="text-gray-600 mb-4">Prefer to reach out directly?</p>
-            <div className="flex flex-wrap justify-center gap-6 text-sm">
-              <a href="mailto:hello@imaginaryspace.com" className="text-purple-600 hover:text-purple-700 font-semibold">
-                hello@imaginaryspace.com
-              </a>
-              <a href="tel:+15550001234" className="text-purple-600 hover:text-purple-700 font-semibold">
-                +1 (555) 000-1234
-              </a>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-      
-      {/* Footer */}
-      <footer className="bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 text-white">
-  <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-    <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16">
-      {/* Left Side - CTA/Newsletter */}
-      <div className="space-y-6">
-        <div>
-          <h2 className="text-3xl font-bold mb-2 bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
-            Imaginary Space
-          </h2>
-          <p className="text-purple-200 text-lg mb-6">
-            Elevate your brand to new dimensions
-          </p>
-        </div>
-        
-        <div className="bg-white/10 backdrop-blur-sm rounded-lg p-6 border border-purple-400/30">
-          <h3 className="text-xl font-semibold mb-3">Stay in the Loop</h3>
-          <p className="text-purple-200 text-sm mb-4">
-            Get the latest marketing insights and creative inspiration delivered to your inbox.
-          </p>
-          <form className="space-y-3">
-            <input
-              type="email"
-              placeholder="Enter your email"
-              className="w-full px-4 py-3 rounded-lg bg-white/20 border border-purple-300/30 text-white placeholder-purple-300 focus:outline-none focus:ring-2 focus:ring-purple-400 focus:border-transparent"
-            />
-            <button
-              type="submit"
-              className="w-full bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-300 transform hover:scale-105"
-            >
-              Subscribe Now
-            </button>
-          </form>
-        </div>
-
-        <div className="space-y-2 text-purple-200">
-          <p className="flex items-center gap-2">
-            <span className="text-purple-400">📧</span>
-            <a href="mailto:hello@imaginaryspace.com" className="hover:text-white transition-colors">
-              hello@imaginaryspace.com
-            </a>
-          </p>
-          <p className="flex items-center gap-2">
-            <span className="text-purple-400">📞</span>
-            <a href="tel:+15551234567" className="hover:text-white transition-colors">
-              +1 (555) 123-4567
-            </a>
-          </p>
-        </div>
-      </div>
-
-      {/* Right Side - Navigation Links */}
-      <div className="grid grid-cols-2 sm:grid-cols-3 gap-8">
-        <div>
-          <h4 className="text-lg font-semibold mb-4 text-purple-300">Services</h4>
-          <ul className="space-y-2">
-            <li>
-              <a href="#" className="text-purple-200 hover:text-white transition-colors">
-                Brand Strategy
-              </a>
-            </li>
-            <li>
-              <a href="#" className="text-purple-200 hover:text-white transition-colors">
-                Digital Marketing
-              </a>
-            </li>
-            <li>
-              <a href="#" className="text-purple-200 hover:text-white transition-colors">
-                Content Creation
-              </a>
-            </li>
-            <li>
-              <a href="#" className="text-purple-200 hover:text-white transition-colors">
-                Social Media
-              </a>
-            </li>
-            <li>
-              <a href="#" className="text-purple-200 hover:text-white transition-colors">
-                SEO & Analytics
-              </a>
-            </li>
-          </ul>
-        </div>
-
-        <div>
-          <h4 className="text-lg font-semibold mb-4 text-purple-300">Company</h4>
-          <ul className="space-y-2">
-            <li>
-              <a href="#" className="text-purple-200 hover:text-white transition-colors">
-                About Us
-              </a>
-            </li>
-            <li>
-              <a href="#" className="text-purple-200 hover:text-white transition-colors">
-                Our Work
-              </a>
-            </li>
-            <li>
-              <a href="#" className="text-purple-200 hover:text-white transition-colors">
-                Careers
-              </a>
-            </li>
-            <li>
-              <a href="#" className="text-purple-200 hover:text-white transition-colors">
-                Blog
-              </a>
-            </li>
-            <li>
-              <a href="#" className="text-purple-200 hover:text-white transition-colors">
-                Contact
-              </a>
-            </li>
-          </ul>
-        </div>
-
-        <div>
-          <h4 className="text-lg font-semibold mb-4 text-purple-300">Legal</h4>
-          <ul className="space-y-2">
-            <li>
-              <a href="#" className="text-purple-200 hover:text-white transition-colors">
-                Privacy Policy
-              </a>
-            </li>
-            <li>
-              <a href="#" className="text-purple-200 hover:text-white transition-colors">
-                Terms of Service
-              </a>
-            </li>
-            <li>
-              <a href="#" className="text-purple-200 hover:text-white transition-colors">
-                Cookie Policy
-              </a>
-            </li>
-          </ul>
-
-          <div className="mt-8">
-            <h4 className="text-lg font-semibold mb-4 text-purple-300">Follow Us</h4>
-            <div className="flex gap-3">
-              <a
-                href="#"
-                className="w-10 h-10 bg-white/10 hover:bg-white/20 rounded-full flex items-center justify-center transition-all duration-300 hover:scale-110"
-                aria-label="LinkedIn"
-              >
-                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z" />
-                </svg>
-              </a>
-              <a
-                href="#"
-                className="w-10 h-10 bg-white/10 hover:bg-white/20 rounded-full flex items-center justify-center transition-all duration-300 hover:scale-110"
-                aria-label="Twitter"
-              >
-                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M23 3a10.9 10.9 0 01-3.14 1.53 4.48 4.48 0 00-7.86 3v1A10.66 10.66 0 013 4s-4 9 5 13a11.64 11.64 0 01-7 2c9 5 20 0 20-11.5a4.5 4.5 0 00-.08-.83A7.72 7.72 0 0023 3z" />
-                </svg>
-              </a>
-              <a
-                href="#"
-                className="w-10 h-10 bg-white/10 hover:bg-white/20 rounded-full flex items-center justify-center transition-all duration-300 hover:scale-110"
-                aria-label="Instagram"
-              >
-                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z" />
-                </svg>
-              </a>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  {/* Copyright Bar */}
-  <div className="border-t border-purple-400/20">
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-      <p className="text-center text-purple-300 text-sm">
-        © {new Date().getFullYear()} Imaginary Space. All rights reserved. Crafting extraordinary marketing experiences.
-      </p>
-    </div>
-  </div>
-</footer>
-    </main>
-  )
-}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all
